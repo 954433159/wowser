@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  task-3:
+  task-4:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -33,11 +33,17 @@ jobs:
       - name: Reject legacy build syntax
         run: npm run check:legacy
 
-      - name: Run characterization tests
+      - name: Run tests
         run: npm test
 
       - name: TypeScript parse gate
         run: npm run typecheck
+
+      - name: Verify isolated config reset
+        run: |
+          TMP_CONFIG="$(mktemp -d)"
+          XDG_CONFIG_HOME="$TMP_CONFIG" npm run reset
+          rm -rf "$TMP_CONFIG"
 
       - name: Build browser client without unresolved compatibility warnings
         run: |

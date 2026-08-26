@@ -30,29 +30,6 @@ jobs:
       - name: Verify dependency aliases
         run: npm ls blizzardry @napi-ffi/ffi-napi @napi-ffi/ref-napi @napi-ffi/ref-array-di @napi-ffi/ref-struct-di --all
 
-      - name: Inspect Blizzardry published files
-        run: |
-          find node_modules/blizzardry -maxdepth 4 -type f -print | sort
-          node - <<'NODE'
-          const candidates = [
-            'blizzardry/lib/adt',
-            'blizzardry/lib/adt/index.js',
-            'blizzardry/lib/dbc/entities',
-            'blizzardry/lib/m2',
-            'blizzardry/lib/wdt',
-            'blizzardry/lib/wmo',
-            'blizzardry/lib/wmo/group',
-            'blizzardry/lib/restructure'
-          ];
-          for (const candidate of candidates) {
-            try {
-              console.log(candidate, '=>', require.resolve(candidate));
-            } catch (error) {
-              console.log(candidate, '=> UNRESOLVED:', error.code, error.message);
-            }
-          }
-          NODE
-
       - name: Reject legacy build syntax
         run: npm run check:legacy
 
@@ -62,8 +39,14 @@ jobs:
       - name: TypeScript parse gate
         run: npm run typecheck
 
-      - name: Build browser client
-        run: npm run build
+      - name: Build browser client without unresolved compatibility warnings
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee /tmp/wowser-vite-build.log
+          if grep -E 'externalized for browser compatibility|didn.t resolve at build time' /tmp/wowser-vite-build.log; then
+            echo 'Vite build still depends on unresolved browser compatibility fallbacks.' >&2
+            exit 1
+          fi
 
       - name: Inspect build output
         run: |

@@ -1,5 +1,5 @@
-import { DecodeStream } from 'blizzardry/lib/restructure';
-import WMO from 'blizzardry/lib/wmo';
+import { DecodeStream } from 'blizzardry/lib/restructure.js';
+import WMO from 'blizzardry/lib/wmo/index.js';
 
 import Loader from '../../net/loader';
 

@@ -1,5 +1,5 @@
-import { DecodeStream } from 'blizzardry/lib/restructure';
-import WDT from 'blizzardry/lib/wdt';
+import { DecodeStream } from 'blizzardry/lib/restructure.js';
+import WDT from 'blizzardry/lib/wdt/index.js';
 
 import Loader from '../../net/loader';
 

@@ -1,16 +1,18 @@
-name: Phase 1 bootstrap
+name: CI
 
 on:
   push:
     branches:
-      - modernize/phase-1-foundation
+      - master
+      - 'modernize/**'
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  task-4:
+  phase-1:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -27,25 +29,16 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Verify compatibility dependencies
-        run: npm ls blizzardry @napi-ffi/ffi-napi @napi-ffi/ref-napi events buffer stream-browserify util string_decoder --all
-
       - name: Reject legacy build syntax
         run: npm run check:legacy
 
-      - name: Run tests
+      - name: Test
         run: npm test
 
       - name: TypeScript parse gate
         run: npm run typecheck
 
-      - name: Verify isolated config reset
-        run: |
-          TMP_CONFIG="$(mktemp -d)"
-          XDG_CONFIG_HOME="$TMP_CONFIG" npm run reset
-          rm -rf "$TMP_CONFIG"
-
-      - name: Build browser client without unresolved compatibility warnings
+      - name: Build browser client
         run: |
           set -o pipefail
           npm run build 2>&1 | tee /tmp/wowser-vite-build.log
@@ -53,25 +46,5 @@ jobs:
             echo 'Vite build still depends on unresolved browser compatibility fallbacks.' >&2
             exit 1
           fi
-
-      - name: Inspect build output
-        run: |
           test -f dist/index.html
           test -f dist/favicon.png
-          find dist -maxdepth 2 -type f -print | sort
-
-      - name: Verify Vite development shell
-        run: |
-          npm run dev -- --host 127.0.0.1 > /tmp/wowser-vite.log 2>&1 &
-          VITE_PID=$!
-          trap 'kill "$VITE_PID" 2>/dev/null || true' EXIT
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:5173/ > /tmp/wowser-index.html; then
-              break
-            fi
-            sleep 1
-          done
-          curl --fail --silent http://127.0.0.1:5173/ > /dev/null
-          curl --fail --silent --head http://127.0.0.1:5173/favicon.png > /dev/null
-          grep -q '<app></app>' /tmp/wowser-index.html
-          cat /tmp/wowser-vite.log

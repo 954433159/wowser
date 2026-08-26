@@ -8,6 +8,12 @@ const distRoot = fileURLToPath(new URL('./dist/', import.meta.url));
 export default defineConfig({
   root: srcRoot,
   publicDir: publicRoot,
+  oxc: {
+    jsx: {
+      runtime: 'classic',
+      pragma: 'React.createElement',
+    },
+  },
   build: {
     outDir: distRoot,
     emptyOutDir: true,

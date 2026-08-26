@@ -12,6 +12,9 @@
     "types": ["node", "vitest/globals"]
   },
   "include": [
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "vite.config.ts",
     "vitest.config.ts",
     "tests/**/*.js"
   ]

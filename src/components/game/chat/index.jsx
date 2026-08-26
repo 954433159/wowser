@@ -15,9 +15,9 @@ class ChatPanel extends React.Component {
       messages: session.chat.messages
     };
 
-    this._onChange = ::this._onChange;
-    this._onMessage = ::this._onMessage;
-    this._onSubmit = ::this._onSubmit;
+    this._onChange = this._onChange.bind(this);
+    this._onMessage = this._onMessage.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
 
     session.chat.on('message', this._onMessage);
   }

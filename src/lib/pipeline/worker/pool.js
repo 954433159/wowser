@@ -8,7 +8,7 @@ class WorkerPool {
     this.queue = [];
     this.threads = [];
 
-    this.next = ::this.next;
+    this.next = this.next.bind(this);
   }
 
   get defaultConcurrency() {

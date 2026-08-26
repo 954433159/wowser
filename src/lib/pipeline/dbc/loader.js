@@ -1,5 +1,6 @@
-import * as DBC from 'blizzardry/lib/dbc/entities';
-import { DecodeStream } from 'blizzardry/lib/restructure';
+import { Buffer } from 'buffer';
+import * as DBC from 'blizzardry/lib/dbc/entities/index.js';
+import { DecodeStream } from 'blizzardry/lib/restructure.js';
 
 import Loader from '../../net/loader';
 

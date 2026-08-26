@@ -17,7 +17,7 @@ class RealmsHandler extends EventEmitter {
     this.list = [];
 
     // Listen for realm list
-    this.session.auth.on('packet:receive:REALM_LIST', ::this.handleRealmList);
+    this.session.auth.on('packet:receive:REALM_LIST', this.handleRealmList.bind(this));
   }
 
   // Requests a fresh list of realms

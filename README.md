@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/npm/v/wowser.svg?style=flat)](https://www.npmjs.org/package/wowser)
 [![Join Community](https://img.shields.io/badge/discord-join_community-blue.svg?style=flat)](https://discord.gg/DeVVKVg)
-[![Build Status](https://img.shields.io/travis/wowserhq/wowser.svg?style=flat)](https://travis-ci.org/wowserhq/wowser)
+[![Build Status](https://github.com/954433159/wowser/actions/workflows/ci.yml/badge.svg)](https://github.com/954433159/wowser/actions/workflows/ci.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/wowserhq/wowser/badge.svg)](https://snyk.io/test/github/wowserhq/wowser)
 [![Maintainability](https://api.codeclimate.com/v1/badges/863393c7addcb1cd7be7/maintainability)](https://codeclimate.com/github/wowserhq/wowser/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/863393c7addcb1cd7be7/test_coverage)](https://codeclimate.com/github/wowserhq/wowser/test_coverage)
@@ -58,52 +58,56 @@ arrays] and at the very least a binary version of the WebSocket protocol.
 
 ## Development
 
-Wowser is written in [ES2015], developed with [webpack] and [Gulp], compiled by
-[Babel] and [soon™] to be tested through [Mocha].
+The Phase 1 modernized development workflow requires **Node.js 24 LTS** and
+**npm 11 or newer**. It uses Vite and incremental TypeScript while intentionally
+retaining React 0.14.3 and Three.js 0.77.0; renderer/runtime upgrades belong to
+later modernization phases.
 
 1. Clone the repository:
 
    ```shell
-   git clone git://github.com/wowserhq/wowser.git
+   git clone https://github.com/954433159/wowser.git
+   cd wowser
    ```
 
-2. Download and install [Node.js] – including `npm` – for your platform.
-
-3. Install dependencies:
+2. Install dependencies from the lockfile:
 
    ```shell
-   npm install
+   npm ci
    ```
 
-4. Install [StormLib] and [BLPConverter], which are used to handle Blizzard's
-   game files.
+3. Run the asset-free verification gates:
+
+   ```shell
+   npm test
+   npm run typecheck
+   npm run build
+   ```
 
 ### Client
 
-[Webpack]'s development server monitors source files and builds:
+Start the Vite development server:
 
 ```shell
-npm run web-dev
+npm run dev
 ```
 
-Wowser will be served on `http://localhost:8080`.
+Vite serves the browser client on `http://localhost:5173` by default and proxies
+`/pipeline` requests to `http://localhost:3000`.
 
 ### Pipeline server
 
-To deliver game resources to its client, Wowser ships with a pipeline.
-
-Build the pipeline:
+To deliver game resources to its client, Wowser ships with a pipeline server.
+The modernized server runs directly from source through `tsx`:
 
 ```shell
-npm run gulp
+npm start
 ```
 
-Keep this process running to monitor source files and automatically rebuild.
-
-After building, serve the pipeline as follows in a separate process:
+For automatic source reloads while developing the pipeline server:
 
 ```shell
-npm run serve
+npm run serve-dev
 ```
 
 On first run you will be prompted to specify the following:
@@ -112,7 +116,16 @@ On first run you will be prompted to specify the following:
 - Server port (default is `3000`)
 - Number of cluster workers (default depends on amount of CPUs)
 
-Clear these settings by running `npm run reset`
+Clear these settings by running:
+
+```shell
+npm run reset
+```
+
+The pipeline still requires native [StormLib] support and a legally obtained
+World of Warcraft 3.3.5a client data directory. CI, unit tests, TypeScript source
+validation, and the browser production build do **not** require proprietary WoW
+assets or a live WoW server.
 
 **Disclaimer:** Wowser serves up resources to the browser over HTTP. Depending
 on your network configuration these may be available to others. Respect laws and
@@ -140,14 +153,8 @@ When contributing, please:
 - Fork the repository
 - Open a pull request (preferably on a separate branch)
 
-[Babel]: https://babeljs.io/
 [BLPConverter]: https://github.com/wowserhq/blizzardry#blp
-[ES2015]: https://babeljs.io/docs/learn-es2015/
-[Gulp]: http://gulpjs.com/
 [JavaScript's typed arrays]: http://caniuse.com/#search=typed%20arrays
-[Mocha]: http://mochajs.org/
 [Node.js]: http://nodejs.org/#download
 [StormLib]: https://github.com/wowserhq/blizzardry#mpq
 [Websockify]: https://github.com/kanaka/websockify/
-[soon™]: http://www.wowwiki.com/Soon
-[webpack]: http://webpack.github.io/

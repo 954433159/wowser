@@ -1,3 +1,0 @@
-instrumentation:
-  excludes: ['public/**', 'src/**', 'bundle.js', 'gulpfile.babel.js']
-  include-all-sources: true

@@ -2,10 +2,11 @@ import express from 'express';
 import logger from 'morgan';
 
 import Pipeline from './pipeline';
+import { staticRoot } from './paths';
 
 class Server {
 
-  constructor(port, root = process.pwd) {
+  constructor(port, root = process.cwd()) {
     this.port = port;
     this.root = root;
 
@@ -13,7 +14,7 @@ class Server {
 
     this.app.set('root', this.root);
     this.app.use(logger('dev'));
-    this.app.use(express.static('./public'));
+    this.app.use(express.static(staticRoot(this.root)));
     this.app.use('/pipeline', new Pipeline().router);
   }
 

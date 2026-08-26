@@ -16,8 +16,8 @@ class GameScreen extends React.Component {
   constructor() {
     super();
 
-    this.animate = ::this.animate;
-    this.resize = ::this.resize;
+    this.animate = this.animate.bind(this);
+    this.resize = this.resize.bind(this);
 
     this.camera = new THREE.PerspectiveCamera(60, this.aspectRatio, 1, 1000);
     this.camera.up.set(0, 0, 1);

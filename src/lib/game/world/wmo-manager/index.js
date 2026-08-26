@@ -29,7 +29,7 @@ class WMOManager {
 
     this.queues = {
       loadEntry: new ContentQueue(
-        ::this.processLoadEntry,
+        this.processLoadEntry.bind(this),
         this.constructor.LOAD_ENTRY_INTERVAL,
         this.constructor.LOAD_ENTRY_WORK_FACTOR,
         this.constructor.LOAD_ENTRY_WORK_MIN

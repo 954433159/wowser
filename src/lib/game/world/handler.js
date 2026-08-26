@@ -16,9 +16,9 @@ class WorldHandler extends EventEmitter {
 
     this.map = null;
 
-    this.changeMap = ::this.changeMap;
-    this.changeModel = ::this.changeModel;
-    this.changePosition = ::this.changePosition;
+    this.changeMap = this.changeMap.bind(this);
+    this.changeModel = this.changeModel.bind(this);
+    this.changePosition = this.changePosition.bind(this);
 
     this.entities = new Set();
     this.add(this.player);

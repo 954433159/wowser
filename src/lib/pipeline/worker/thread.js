@@ -1,11 +1,9 @@
-import Worker from 'worker!./';
-
 class Thread {
 
   constructor() {
-    this._onMessage = ::this._onMessage;
+    this._onMessage = this._onMessage.bind(this);
 
-    this.worker = new Worker();
+    this.worker = new Worker(new URL('./index.js', import.meta.url), { type: 'module' });
     this.worker.addEventListener('message', this._onMessage);
   }
 

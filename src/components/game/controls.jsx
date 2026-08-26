@@ -52,10 +52,10 @@ class Controls extends React.Component {
 
     this.EPS = 0.000001;
 
-    this._onMouseDown = ::this._onMouseDown;
-    this._onMouseUp = ::this._onMouseUp;
-    this._onMouseMove = ::this._onMouseMove;
-    this._onMouseWheel = ::this._onMouseWheel;
+    this._onMouseDown = this._onMouseDown.bind(this);
+    this._onMouseUp = this._onMouseUp.bind(this);
+    this._onMouseMove = this._onMouseMove.bind(this);
+    this._onMouseWheel = this._onMouseWheel.bind(this);
 
     this.element.addEventListener('mousedown', this._onMouseDown);
     this.element.addEventListener('mouseup', this._onMouseUp);

@@ -9,7 +9,7 @@ class WMOGroup extends THREE.Mesh {
   constructor(wmo, id, data, path) {
     super();
 
-    this.dispose = ::this.dispose;
+    this.dispose = this.dispose.bind(this);
 
     this.matrixAutoUpdate = false;
 

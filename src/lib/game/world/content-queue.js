@@ -9,8 +9,8 @@ class ContentQueue {
 
     this.queue = new Map();
 
-    this.schedule = ::this.schedule;
-    this.run = ::this.run;
+    this.schedule = this.schedule.bind(this);
+    this.run = this.run.bind(this);
 
     this.schedule();
   }

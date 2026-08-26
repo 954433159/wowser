@@ -1,5 +1,6 @@
-import ADT from 'blizzardry/lib/adt';
-import { DecodeStream } from 'blizzardry/lib/restructure';
+import { Buffer } from 'buffer';
+import ADT from 'blizzardry/lib/ADT/index.js';
+import { DecodeStream } from 'blizzardry/lib/restructure.js';
 
 import Loader from '../../net/loader';
 

@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  task-1:
+  task-2:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -22,17 +22,48 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
 
-      - name: Show tool versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Resolve dependency graph and regenerate lockfile
-        run: npm install
+      - name: Install
+        run: npm ci
 
       - name: Verify dependency aliases
         run: npm ls blizzardry @napi-ffi/ffi-napi @napi-ffi/ref-napi @napi-ffi/ref-array-di @napi-ffi/ref-struct-di --all
+
+      - name: Normalize Babel-only syntax
+        if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, readFile, writeFile } from 'node:fs/promises';
+          import { extname, join } from 'node:path';
+
+          const extensions = new Set(['.js', '.jsx']);
+
+          async function walk(dir) {
+            for (const entry of await readdir(dir, { withFileTypes: true })) {
+              const path = join(dir, entry.name);
+              if (entry.isDirectory()) {
+                await walk(path);
+                continue;
+              }
+              if (!extensions.has(extname(path))) continue;
+
+              const source = await readFile(path, 'utf8');
+              let next = source.replace(/::this\.([A-Za-z_$][\w$]*)/g, 'this.$1.bind(this)');
+              next = next.replace(
+                /^(\s*)export\s+([A-Za-z_$][\w$]*)\s+from\s+(['"][^'"]+['"]);\s*$/gm,
+                '$1export { default as $2 } from $3;'
+              );
+
+              if (next !== source) {
+                await writeFile(path, next);
+                console.log(`normalized ${path}`);
+              }
+            }
+          }
+
+          await walk('src');
+          NODE
 
       - name: Reject legacy Babel syntax
         run: npm run check:legacy
@@ -40,21 +71,18 @@ jobs:
       - name: Run characterization tests
         run: npm test
 
-      - name: Verify clean install from regenerated lockfile
-        run: |
-          rm -rf node_modules
-          npm ci
-          npm test
+      - name: TypeScript parse gate
+        run: npm run typecheck
 
-      - name: Commit regenerated lockfile
+      - name: Commit normalized syntax
         if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
         run: |
-          if git diff --quiet -- package-lock.json; then
-            echo "package-lock.json already synchronized"
+          if git diff --quiet -- src; then
+            echo "source already normalized"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git commit -m "build: regenerate node 24 lockfile"
+          git add src
+          git commit -m "refactor: normalize legacy babel-only syntax"
           git push origin HEAD:${GITHUB_REF_NAME}

@@ -53,8 +53,8 @@ These are the primary migration blockers for Vite.
 
 Phase 1 will target:
 
-- Node.js 24 LTS as the recommended development runtime.
-- npm using a regenerated lockfile from the Phase 1 dependency graph.
+- Node.js 24.x LTS as the recommended development runtime.
+- npm with a regenerated and committed lockfile from the Phase 1 dependency graph.
 - Vite 8 as the browser development/build tool.
 - TypeScript in incremental adoption mode.
 - Existing React 0.14 runtime.
@@ -187,9 +187,9 @@ Phase 1 must not introduce fallback content that masks missing WoW resources.
 
 ## 10. CI baseline
 
-If GitHub Actions is absent, Phase 1 will add a minimal workflow using the selected Node.js runtime to run:
+If GitHub Actions is absent, Phase 1 will add a minimal workflow using Node.js 24.x to run:
 
-1. dependency installation,
+1. `npm ci`,
 2. tests,
 3. production build.
 
@@ -214,7 +214,7 @@ Exact commit boundaries may change if tests expose a safer dependency order, but
 Phase 1 is complete when all of the following are true on `modernize/phase-1-foundation`:
 
 - A supported Node.js version is documented and enforced through project metadata where practical.
-- `npm install` or the selected deterministic install command succeeds from a clean checkout.
+- A regenerated lockfile is committed and `npm ci` succeeds from a clean checkout.
 - `npm test` succeeds without proprietary WoW assets.
 - `npm run build` succeeds using Vite.
 - `npm run dev` starts the modern development server.

@@ -34,6 +34,9 @@ jobs:
       - name: Verify dependency aliases
         run: npm ls blizzardry @napi-ffi/ffi-napi @napi-ffi/ref-napi @napi-ffi/ref-array-di @napi-ffi/ref-struct-di --all
 
+      - name: Reject legacy Babel syntax
+        run: npm run check:legacy
+
       - name: Run characterization tests
         run: npm test
 

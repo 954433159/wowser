@@ -16,6 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:legacy": "node scripts/check-legacy-syntax.mjs",
+    "typecheck": "tsc -p tsconfig.json",
     "proxy": "websockify"
   },
   "engines": {

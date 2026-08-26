@@ -29,6 +29,18 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Verify Node 24 FFI bindings
+        run: |
+          node - <<'NODE'
+          const { createRequire } = require('node:module');
+          const requireFromBlizzardry = createRequire(require.resolve('blizzardry/package.json'));
+          const ffi = requireFromBlizzardry('ffi-napi');
+          const ref = requireFromBlizzardry('ref-napi');
+          if (typeof ffi.Library !== 'function') throw new Error('ffi-napi Library API unavailable');
+          if (!ref.types || !ref.types.void) throw new Error('ref-napi types API unavailable');
+          console.log('Node 24 FFI bindings loaded');
+          NODE
+
       - name: Reject legacy build syntax
         run: npm run check:legacy
 

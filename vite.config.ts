@@ -24,7 +24,7 @@ export default defineConfig({
     preprocessorOptions: {
       styl: {
         define: {
-          url: stylus.resolver(),
+          url: stylus.resolver({}),
         },
       },
     },

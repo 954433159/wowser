@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { DecodeStream } from 'blizzardry/lib/restructure.js';
 import WDT from 'blizzardry/lib/wdt/index.js';
 

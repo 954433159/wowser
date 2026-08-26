@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { DecodeStream } from 'blizzardry/lib/restructure.js';
 import WMOGroup from 'blizzardry/lib/wmo/group.js';
 

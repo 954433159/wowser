@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import ADT from 'blizzardry/lib/ADT/index.js';
 import { DecodeStream } from 'blizzardry/lib/restructure.js';
 

@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { DecodeStream } from 'blizzardry/lib/restructure.js';
 import M2 from 'blizzardry/lib/m2/index.js';
 import Skin from 'blizzardry/lib/m2/skin.js';

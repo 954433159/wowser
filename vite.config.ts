@@ -8,17 +8,23 @@ const srcRoot = fileURLToPath(new URL('./src/', import.meta.url));
 const publicRoot = fileURLToPath(new URL('./public/', import.meta.url));
 const distRoot = fileURLToPath(new URL('./dist/', import.meta.url));
 
+const eventsPolyfill = require.resolve('events/');
+const bufferPolyfill = require.resolve('buffer/');
+const streamPolyfill = require.resolve('stream-browserify');
+const utilPolyfill = require.resolve('util/');
+const stringDecoderPolyfill = require.resolve('string_decoder/');
+
 export default defineConfig({
   root: srcRoot,
   publicDir: publicRoot,
   resolve: {
-    alias: {
-      events: require.resolve('events/'),
-      buffer: require.resolve('buffer/'),
-      stream: require.resolve('stream-browserify'),
-      util: require.resolve('util/'),
-      string_decoder: require.resolve('string_decoder/'),
-    },
+    alias: [
+      { find: /^events\/?$/, replacement: eventsPolyfill },
+      { find: /^buffer\/?$/, replacement: bufferPolyfill },
+      { find: /^stream\/?$/, replacement: streamPolyfill },
+      { find: /^util\/?$/, replacement: utilPolyfill },
+      { find: /^string_decoder\/?$/, replacement: stringDecoderPolyfill },
+    ],
   },
   css: {
     preprocessorOptions: {

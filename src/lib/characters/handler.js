@@ -17,7 +17,7 @@ class CharacterHandler extends EventEmitter {
     this.list = [];
 
     // Listen for character list
-    this.session.game.on('packet:receive:SMSG_CHAR_ENUM', ::this.handleCharacterList);
+    this.session.game.on('packet:receive:SMSG_CHAR_ENUM', this.handleCharacterList.bind(this));
   }
 
   // Requests a fresh list of characters

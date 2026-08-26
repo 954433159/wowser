@@ -36,14 +36,14 @@ class WMOHandler {
 
     this.queues = {
       loadGroup: new ContentQueue(
-        ::this.processLoadGroup,
+        this.processLoadGroup.bind(this),
         this.constructor.LOAD_GROUP_INTERVAL,
         this.constructor.LOAD_GROUP_WORK_FACTOR,
         this.constructor.LOAD_GROUP_WORK_MIN
       ),
 
       loadDoodad: new ContentQueue(
-        ::this.processLoadDoodad,
+        this.processLoadDoodad.bind(this),
         this.constructor.LOAD_DOODAD_INTERVAL,
         this.constructor.LOAD_DOODAD_WORK_FACTOR,
         this.constructor.LOAD_DOODAD_WORK_MIN
@@ -204,7 +204,7 @@ class WMOHandler {
   }
 
   scheduleUnload(unloadDelay = 0) {
-    this.pendingUnload = setTimeout(::this.unload, unloadDelay);
+    this.pendingUnload = setTimeout(this.unload.bind(this), unloadDelay);
   }
 
   cancelUnload() {

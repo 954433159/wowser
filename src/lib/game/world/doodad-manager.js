@@ -21,10 +21,10 @@ class DoodadManager {
     this.entriesPendingLoad = new Map();
     this.entriesPendingUnload = new Map();
 
-    this.loadChunk = ::this.loadChunk;
-    this.unloadChunk = ::this.unloadChunk;
-    this.loadDoodads = ::this.loadDoodads;
-    this.unloadDoodads = ::this.unloadDoodads;
+    this.loadChunk = this.loadChunk.bind(this);
+    this.unloadChunk = this.unloadChunk.bind(this);
+    this.loadDoodads = this.loadDoodads.bind(this);
+    this.unloadDoodads = this.unloadDoodads.bind(this);
 
     // Kick off intervals.
     this.loadDoodads();

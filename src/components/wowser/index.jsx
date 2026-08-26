@@ -26,8 +26,8 @@ class Wowser extends React.Component {
       screen: session.screen
     };
 
-    this._onScreenChange = ::this._onScreenChange;
-    this._onScreenSelect = ::this._onScreenSelect;
+    this._onScreenChange = this._onScreenChange.bind(this);
+    this._onScreenSelect = this._onScreenSelect.bind(this);
 
     session.on('screen:change', this._onScreenChange);
   }

@@ -18,12 +18,12 @@ class GameHandler extends Socket {
     this.session = session;
 
     // Listen for incoming data
-    this.on('data:receive', ::this.dataReceived);
+    this.on('data:receive', this.dataReceived.bind(this));
 
     // Delegate packets
-    this.on('packet:receive:SMSG_AUTH_CHALLENGE', ::this.handleAuthChallenge);
-    this.on('packet:receive:SMSG_AUTH_RESPONSE', ::this.handleAuthResponse);
-    this.on('packet:receive:SMSG_LOGIN_VERIFY_WORLD', ::this.handleWorldLogin);
+    this.on('packet:receive:SMSG_AUTH_CHALLENGE', this.handleAuthChallenge.bind(this));
+    this.on('packet:receive:SMSG_AUTH_RESPONSE', this.handleAuthResponse.bind(this));
+    this.on('packet:receive:SMSG_LOGIN_VERIFY_WORLD', this.handleWorldLogin.bind(this));
   }
 
   // Connects to given host through given port

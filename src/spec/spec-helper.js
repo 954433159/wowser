@@ -13,4 +13,4 @@ afterEach(function() {
 });
 
 export const expect = chai.expect;
-export sinon from 'sinon';
+export { default as sinon } from 'sinon';

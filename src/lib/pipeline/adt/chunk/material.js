@@ -1,8 +1,8 @@
 import THREE from 'three';
 
 import TextureLoader from '../../texture-loader';
-import fragmentShader from './shader.frag';
-import vertexShader from './shader.vert';
+import fragmentShader from './shader.frag?raw';
+import vertexShader from './shader.vert?raw';
 
 class Material extends THREE.ShaderMaterial {
 

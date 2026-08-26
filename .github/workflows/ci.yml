@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  task-2:
+  task-3:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -30,42 +30,7 @@ jobs:
       - name: Verify dependency aliases
         run: npm ls blizzardry @napi-ffi/ffi-napi @napi-ffi/ref-napi @napi-ffi/ref-array-di @napi-ffi/ref-struct-di --all
 
-      - name: Normalize Babel-only syntax
-        if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
-        run: |
-          node --input-type=module <<'NODE'
-          import { readdir, readFile, writeFile } from 'node:fs/promises';
-          import { extname, join } from 'node:path';
-
-          const extensions = new Set(['.js', '.jsx']);
-
-          async function walk(dir) {
-            for (const entry of await readdir(dir, { withFileTypes: true })) {
-              const path = join(dir, entry.name);
-              if (entry.isDirectory()) {
-                await walk(path);
-                continue;
-              }
-              if (!extensions.has(extname(path))) continue;
-
-              const source = await readFile(path, 'utf8');
-              let next = source.replace(/::this\.([A-Za-z_$][\w$]*)/g, 'this.$1.bind(this)');
-              next = next.replace(
-                /^(\s*)export\s+([A-Za-z_$][\w$]*)\s+from\s+(['"][^'"]+['"]);\s*$/gm,
-                '$1export { default as $2 } from $3;'
-              );
-
-              if (next !== source) {
-                await writeFile(path, next);
-                console.log(`normalized ${path}`);
-              }
-            }
-          }
-
-          await walk('src');
-          NODE
-
-      - name: Reject legacy Babel syntax
+      - name: Reject legacy build syntax
         run: npm run check:legacy
 
       - name: Run characterization tests
@@ -74,15 +39,27 @@ jobs:
       - name: TypeScript parse gate
         run: npm run typecheck
 
-      - name: Commit normalized syntax
-        if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
+      - name: Build browser client
+        run: npm run build
+
+      - name: Inspect build output
         run: |
-          if git diff --quiet -- src; then
-            echo "source already normalized"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src
-          git commit -m "refactor: normalize legacy babel-only syntax"
-          git push origin HEAD:${GITHUB_REF_NAME}
+          test -f dist/index.html
+          test -f dist/favicon.png
+          find dist -maxdepth 2 -type f -print | sort
+
+      - name: Verify Vite development shell
+        run: |
+          npm run dev -- --host 127.0.0.1 > /tmp/wowser-vite.log 2>&1 &
+          VITE_PID=$!
+          trap 'kill "$VITE_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:5173/ > /tmp/wowser-index.html; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:5173/ > /dev/null
+          curl --fail --silent --head http://127.0.0.1:5173/favicon.png > /dev/null
+          grep -q '<app></app>' /tmp/wowser-index.html
+          cat /tmp/wowser-vite.log

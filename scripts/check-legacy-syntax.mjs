@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 
-const extensions = new Set(['.js', '.jsx']);
+const extensions = new Set(['.js', '.jsx', '.styl']);
 const violations = [];
 const exportExtension = /^\s*export\s+(?:default\s+)?[A-Za-z_$][\w$]*\s+from\s+['"]/;
 
@@ -21,6 +21,12 @@ async function walk(dir) {
       }
       if (exportExtension.test(line)) {
         violations.push(`${path}:${index + 1}: Babel export-extension syntax`);
+      }
+      if (line.includes('worker!')) {
+        violations.push(`${path}:${index + 1}: webpack worker-loader inline prefix`);
+      }
+      if (line.includes('~normalize.css')) {
+        violations.push(`${path}:${index + 1}: webpack tilde package import`);
       }
     });
   }

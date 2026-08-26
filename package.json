@@ -17,6 +17,9 @@
     "test:watch": "vitest",
     "check:legacy": "node scripts/check-legacy-syntax.mjs",
     "typecheck": "tsc -p tsconfig.json",
+    "dev": "vite --config vite.config.ts",
+    "build": "vite build --config vite.config.ts",
+    "preview": "vite preview --config vite.config.ts",
     "proxy": "websockify"
   },
   "engines": {
